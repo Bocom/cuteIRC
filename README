@@ -1,1 +1,7 @@
-This client is not yet functional.
+This client is functional but very primitive.
+
+You can only interact by sending raw commands.
+
+Registering is not yet handled automatically.
+
+It doesn't respond to requests.
