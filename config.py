@@ -12,8 +12,10 @@ class Configuration(object):
   def open_config(self):
     _file = open("configuration.conf", "r")
     self.config = yaml.load(_file)
+    _file.close()
     return self.config
   
   def save_config(self):
     _file = open("configuration.conf", "w")
     yaml.dump(self.config, _file)
+    _file.close()

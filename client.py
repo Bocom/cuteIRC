@@ -44,14 +44,13 @@ class Connection(object):
   def run(self):
     pass
 
-class ParentLayout(QtGui.QWidget, Eventful):
-  """A debug layout for bsirctest"""
+class ParentLayout(QtGui.QWidget):
+  """A debug layout for cuteIRC"""
   connection = None
   def __init__(self, parent=None):
     QtGui.QWidget.__init__(self, parent)
-    Eventful.__init__(self, ['draw_text'])
     
-    self.setWindowTitle("bsirctest")
+    self.setWindowTitle("cuteIRC")
     
     sendButton = QtGui.QPushButton("Send")
     
@@ -79,15 +78,17 @@ class ParentLayout(QtGui.QWidget, Eventful):
   def start(self, net):
     self.connection = NetworkThread(self, net)
   
-  def _on_draw_text(self, text):
+  @QtCore.pyqtSlot(str)
+  def draw_text(self, text):
     self.chatArea.appendPlainText(text)
-
+  
 class CustomInput(QtGui.QLineEdit):
   def __init__(self, p, parent=None):
     QtGui.QLineEdit.__init__(self, parent)
     self.parent = p
   
   def keyPressEvent(self, event):
+    # For some reason, Qt.Key_Enter is wrong by one.
     if event.key() == Qt.Key_Enter-1:
       self.parent.chatArea.appendPlainText(self.parent.inputField.text())
       self.parent.connection.send(self.parent.inputField.text()+"\r\n")

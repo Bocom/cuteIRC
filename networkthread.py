@@ -1,22 +1,25 @@
+from PyQt4 import QtCore
 from PyQt4.QtCore import Qt, QThread
 import re
 from config import Configuration
 import socket
-from eventful import *
 
-class NetworkThread(QThread, Eventful):
+class NetworkThread(QThread):
   config = None
   socket = None
   parent = None
   connected = None
   buf = ""
   
+  # Signals
+  change_text = QtCore.pyqtSignal(str)
+  
   def __init__(self, parent, net):
     QThread.__init__(self)
-    Eventful.__init__(self, ['connected', 'disconnected', 'packet'])
     if not self.config:
       self.config = Configuration()
     self.parent = parent
+    self.change_text.connect(parent.draw_text)
     ip = self.config.config['servers'][net]['ip']
     port = self.config.config['servers'][net]['port']
     serverpass = self.config.config['servers'][net]['password']
@@ -41,9 +44,11 @@ class NetworkThread(QThread, Eventful):
       self.buf = lines[-1]
       for line in lines[:-1]:
         m = _rfc_1459_command_regexp.match(line)
-        a = m.group("argument").split(" :", 1)
-        self.parent.eventful_emit("draw_text", a[1])
-        print(a[1])
+        try:
+          a = m.group("argument").split(" :", 1)
+          self.change_text.emit(a[1])
+        except:
+          pass
       
   def send(self, data):
     data_len = len(data)
