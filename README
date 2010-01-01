@@ -1,7 +1,7 @@
 This client is functional but very primitive.
 
-You can only interact by sending raw commands.
+It is currently using a multi-window interface,
+and only very few commands are supported. Several
+of the commands that actually are supported are buggy :)
 
-Registering is not yet handled automatically.
-
-It doesn't respond to requests.
+Nickserv auto-identify is not yet handled automatically.
